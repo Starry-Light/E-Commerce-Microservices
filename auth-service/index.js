@@ -67,7 +67,9 @@ app.post('/auth/register', async (req, res) => {
     }
 })
 
-
+app.get('/auth/test', async (req, res) => {
+    res.json({message: "This works"})
+})
 
 app.listen(PORT, () => {
     console.log(`Auth Service at ${PORT}`)
