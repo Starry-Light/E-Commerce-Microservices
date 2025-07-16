@@ -8,7 +8,7 @@ const amqp = require('amqplib')
 const Product = require('./Product')
 const isAuthenticated = require('../isAuthenticated')
 var channel, connection
-
+var order
 mongoose.connect("mongodb://localhost/product-service", {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -66,6 +66,12 @@ app.post('/product/buy', isAuthenticated, async (req, res) => {
         products,
         userEmail: req.user.email
     })) )
+    channel.consume("PRODUCT", data => {
+        console.log("Consuming Product Queue");
+        order = JSON.parse(data.content)
+        channel.ack(data)
+    })
+    return res.json(order)
 })
 
 app.listen(PORT, () => {
